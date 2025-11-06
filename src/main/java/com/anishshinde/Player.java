@@ -70,38 +70,61 @@ public class Player implements Runnable {
         }
     }
 
+    private void startInitiator() throws InterruptedException {
+        // use String for simplicity, otherwise StringBuilder is more efficient for multiple concatenations
+        String message;
+
+        // send initial message
+        message = "message 0";
+        sendMessage(message);
+        System.out.println("Player communication started");
+        printCommunication(playerName, message);
+        messagesSent++;
+
+        while (true) {
+            message = queue.take();
+            Thread.sleep(MESSAGE_DELAY_MS);
+
+            responsesReceived++;
+            if (initiatorStopConditionFulfilled()) break;
+            message = message + " " + messagesSent;
+            sendMessage(message);
+            printCommunication(playerName, message);
+            messagesSent++;
+        }
+    }
+
+    private void startResponder() throws InterruptedException {
+        // use String for simplicity, otherwise StringBuilder is more efficient for multiple concatenations
+        String message;
+
+        while (true) {
+            message = queue.take();
+            Thread.sleep(MESSAGE_DELAY_MS);
+
+            // increment responsesSent before sendMessage() so that the message contains the count of this response
+            message = message + " " + ++responsesSent;
+            sendMessage(message);
+            printCommunication(playerName, message);
+            if (responderStopConditionFulfilled()) break;
+        }
+    }
+
+    private boolean initiatorStopConditionFulfilled(){
+        return responsesReceived == maxMessages && messagesSent == maxMessages;
+    }
+
+    private boolean responderStopConditionFulfilled(){
+        return responsesSent == maxMessages;
+    }
+
     @Override
     public void run() {
         try {
-            // use String for simplicity, otherwise StringBuilder is more efficient for multiple concatenations
-            String message;
-
-            if (initiator) {
-                message = "message 0";
-                sendMessage(message);
-                System.out.println("Player communication started");
-                printCommunication(playerName, message);
-                messagesSent++;
-            }
-
-            while (true) {
-                message = queue.take();
-                Thread.sleep(MESSAGE_DELAY_MS);
-
-                if (initiator) {
-                    responsesReceived++;
-                    if (responsesReceived == maxMessages && messagesSent == maxMessages) break;
-                    message = message + " " + messagesSent;
-                    sendMessage(message);
-                    printCommunication(playerName, message);
-                    messagesSent++;
-                } else {
-                    // increment responsesSent before sendMessage() so that the message contains the count of this response
-                    message = message + " " + ++responsesSent;
-                    sendMessage(message);
-                    printCommunication(playerName, message);
-                    if (responsesSent == maxMessages) break;
-                }
+            if(initiator){
+                startInitiator();
+            } else {
+                startResponder();
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
