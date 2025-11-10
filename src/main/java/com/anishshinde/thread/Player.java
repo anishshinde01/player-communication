@@ -4,11 +4,21 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
- * Represents a player in a two-Player messaging game.
- * Each player runs on a separate thread and communicates with the other player
- * using a BlockingQueue. The initiator starts the first message.
+ * Represents a player in a 2-Player messaging game.
+ * Responsibilities:
+ * - Each Player instance runs on a separate thread and communicates with the other Player via a BlockingQueue.
+ * - The initiator sends the first message
+ * - Handles sending and receiving messages through the queue in a thread-safe manner.
  *
- * Lombok(3rd Party Alternative not used) could generate simple getters for playerName, maxMessages, initiator
+ * Developer Decisions:
+ * - The queue is private and only accessible through sendMessage() and takeMessage(), preventing misuse from other classes.
+ * - otherPlayer must be set exactly once before the run() method; attempting to change it later throws an exception.
+ * - MESSAGE_DELAY_MS is static and final and not implemented in App.java class, as its purpose is to just make sure
+ *   that the print statements are printed out in the terminal in the correct order. It in no way affects the logic
+ *   of the program. This small delay is added because the execution of threads can be faster than terminal output,
+ *   causing print statements to appear out of order.
+ * - Lombok is not used to avoid introducing 3rd-party dependencies (as per project requirements),
+ *   so simple getters are manually provided.
  */
 public class Player implements Runnable {
 
@@ -31,19 +41,27 @@ public class Player implements Runnable {
         queue = new LinkedBlockingQueue<>();
     }
 
+    /** @return name of this player*/
     public String getPlayerName(){
         return playerName;
     }
 
+    /** @return maximum number of messages*/
     public int getMaxMessages(){
         return maxMessages;
     }
 
+    /** @return true if this player is an initiator*/
     public boolean isInitiator(){
         return initiator;
     }
 
-    // otherPlayer must be set exactly once before run(), further calls will throw an exception
+    /**
+     * Sets the other player instance for communication.
+     * otherPlayer must be set exactly once before run(), further calls will throw an exception
+     *
+     * @param otherPlayer otherPlayer
+     */
     public void setOtherPlayer(Player otherPlayer) {
         if (this.otherPlayer != null) {
             throw new IllegalStateException("Other player already set, cannot change");
@@ -51,6 +69,7 @@ public class Player implements Runnable {
         this.otherPlayer = otherPlayer;
     }
 
+    /** @return name of otherPlayer*/
     public String getOtherPlayerName(){
         return otherPlayer.playerName;
     }

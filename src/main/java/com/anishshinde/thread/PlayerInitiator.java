@@ -1,11 +1,19 @@
 package com.anishshinde.thread;
 
 import static com.anishshinde.thread.Player.MESSAGE_DELAY_MS;
-import static com.anishshinde.thread.PrintCommunication.printInitiatorMessage;
-import static com.anishshinde.thread.StopConditions.initiatorStopConditionFulfilled;
+import static com.anishshinde.thread.PrintCommunicationThreads.printInitiatorMessage;
+import static com.anishshinde.common.StopConditions.initiatorStopConditionFulfilled;
 
 /**
  * Handles the messaging logic for the initiator player
+ *
+ * Responsibilities:
+ * Responsible only for the initiator's behavior: sending the first message,
+ * waiting for responses, and sending subsequent messages until the stop condition is met.
+ *
+ * Developer Decisions:
+ * Using String instead of StringBuilder for simplicity, otherwise StringBuilder is more
+ * efficient for multiple concatenations
  */
 public class PlayerInitiator {
 
@@ -25,6 +33,10 @@ public class PlayerInitiator {
      * and then waits until it receives back a response. One receiving a response, it again concatenates
      * the received message with its own and sends back. This process is repeated until pre-defined
      * number of messages have been sent.
+     *
+     * A small delay (MESSAGE_DELAY_MS) is added to ensure the console prints messages
+     * in the intended order, as thread execution can be faster than terminal output.
+     *
      * @throws InterruptedException if the thread is interrupted while waiting
      */
     public void startPlayerInitiator() throws InterruptedException {
