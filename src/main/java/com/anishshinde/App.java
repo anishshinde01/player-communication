@@ -34,6 +34,14 @@ public class App {
         // value passed must be greater than 0
         int maxMessages = 4;
 
+        // accept parameters from the Terminal when running shell script
+        if(args.length > 0){
+            useThreads = Boolean.parseBoolean(args[0]);
+        }
+        if(args.length > 1){
+            maxMessages = Integer.parseInt(args[1]);
+        }
+
         // run the players (class instances) inside the same Java process but in separate threads
         if(useThreads) {
             Player player1 = new Player("player1", true, maxMessages);
