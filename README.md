@@ -89,8 +89,7 @@ Test class: `TestPlayerInitiator`
 
 Verifies that the initiator player sends the first message and waits for a response before sending the next message.
 
-Uses `Mockito` to mock a Player instance and control responses.
-Confirms the back-and-forth message order by verifying the sequence of sendMessage and takeMessage calls.
----
+Uses `Mockito` to mock a Player instance and control responses. Confirms the back-and-forth message order by verifying the sequence of sendMessage and takeMessage calls.
 
+---
 > `Author`: Anish Shinde
