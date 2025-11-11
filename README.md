@@ -84,3 +84,12 @@ Inside `player-communication/src/main/java/com/anishshinde/`:
 - **Maven project producing a `.jar`**: `pom.xml` included; `mvn clean package` builds `.jar`.
 ---
 
+### Testing ✅
+Test class: `TestPlayerInitiator`
+
+Verifies that the initiator player sends the first message and waits for a response before sending the next message.
+
+Uses `Mockito` to mock a Player instance and control responses.
+Confirms the back-and-forth message order by verifying the sequence of sendMessage and takeMessage calls.
+---
+> `Author`: Anish Shinde

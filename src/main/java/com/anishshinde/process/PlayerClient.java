@@ -45,7 +45,8 @@ public class PlayerClient {
      * @param args command-line arguments: args[0] = maxMessages
      */
     public static void main(String[] args){
-        int maxMessages = Integer.parseInt(args[0]);
+        int maxMessages = 4;
+        if(args.length > 0) maxMessages = Integer.parseInt(args[0]);
         PlayerClient playerInitiator = new PlayerClient(maxMessages);
         playerInitiator.startPlayerInitiator();
     }
