@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
 
+# Build the project first
+echo "*** Building the project using Maven ***"
+mvn clean package || { echo "Maven build failed! Exiting."; exit 1; }
+
 MAX_MESSAGES=4
 USE_THREADS=true
 
+echo ""
+echo "Project BUILD SUCCESS using Maven"
+echo ""
 echo "*** Player Communication Starter ***"
 echo ""
 echo "Choose mode of execution:"
